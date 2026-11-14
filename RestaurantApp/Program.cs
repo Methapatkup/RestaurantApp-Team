@@ -93,7 +93,7 @@ namespace RestaurantApp
                 return;
             }
 
-            Console.Write("Enter restaurant rating (0-5): ");
+            Console.Write("Enter restaurant rating (0   -5): ");
 
             double rating;
 
