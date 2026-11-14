@@ -23,7 +23,7 @@ namespace RestaurantApp
 
     internal class Program
     {
-        // List เก็บข้อมูลร้านอาหาร
+        // ข้อมูลร้านอาหาร
         static List<Restaurant> restaurants = new List<Restaurant>
         {
             new Restaurant(1, "Quanjude Roast Duck", "Beijing Cuisine", 4.5),
@@ -44,6 +44,7 @@ namespace RestaurantApp
                 Console.WriteLine("================================");
                 Console.WriteLine("1. Add Restaurant");
                 Console.WriteLine("2. Show All Restaurants");
+                Console.WriteLine("3. Search Restaurant");
                 Console.WriteLine("0. Exit");
                 Console.WriteLine("================================");
                 Console.Write("Select menu: ");
@@ -61,6 +62,10 @@ namespace RestaurantApp
 
                     case 2:
                         ShowRestaurants();
+                        break;
+
+                    case 3:
+                        SearchRestaurant();
                         break;
 
                     case 0:
@@ -93,7 +98,7 @@ namespace RestaurantApp
                 return;
             }
 
-            Console.Write("Enter restaurant rating (0   -5): ");
+            Console.Write("Enter restaurant rating (0-5): ");
 
             double rating;
 
@@ -116,7 +121,7 @@ namespace RestaurantApp
             Console.WriteLine("Restaurant ID: " + newId);
         }
 
-        // แสดงรายชื่อร้านอาหารทั้งหมด
+        // B: แสดงรายชื่อร้านอาหารทั้งหมด
         static void ShowRestaurants()
         {
             Console.WriteLine("\n=== Restaurant List ===");
@@ -125,41 +130,62 @@ namespace RestaurantApp
             foreach (Restaurant restaurant in restaurants)
             {
                 Console.WriteLine(
-                    $"{restaurant.Id} | {restaurant.Name} | " +
-                    $"{restaurant.Type} | {restaurant.Rating:F1}"
+                    $"{restaurant.Id} | {restaurant.Name} | {restaurant.Type} | {restaurant.Rating:F1}"
                 );
             }
 
             int totalRestaurants = restaurants.Count;
 
-            double averageRating = restaurants.Average(r => r.Rating);
+            double averageRating = restaurants.Count > 0
+                ? restaurants.Average(r => r.Rating)
+                : 0;
 
             Console.WriteLine("------------------------------");
             Console.WriteLine($"Total restaurants: {totalRestaurants}");
             Console.WriteLine($"Average rating: {averageRating:F2}");
+        }
 
-            double maxRating = restaurants.Max(r => r.Rating);
-            double minRating = restaurants.Min(r => r.Rating);
+        // D: ค้นหาร้านอาหาร
+        static void SearchRestaurant()
+        {
+            Console.WriteLine("\n=== Search Restaurant ===");
+            Console.Write("Enter restaurant name: ");
 
-            var highestRated = restaurants.Where(r => r.Rating == maxRating).ToList();
-            var lowestRated = restaurants.Where(r => r.Rating == minRating).ToList();
+            string keyword = Console.ReadLine();
+
+            if (string.IsNullOrWhiteSpace(keyword))
+            {
+                Console.WriteLine("Please enter a restaurant name.");
+                return;
+            }
+
+            var result = restaurants
+                .Where(r => r.Name.IndexOf(
+                    keyword,
+                    StringComparison.OrdinalIgnoreCase
+                ) >= 0)
+                .ToList();
+
+            if (result.Count == 0)
+            {
+                Console.WriteLine("Restaurant not found.");
+                return;
+            }
+
+            Console.WriteLine("\nID | Name | Type | Rating");
+
+            foreach (Restaurant restaurant in result)
+            {
+                Console.WriteLine(
+                    $"{restaurant.Id} | {restaurant.Name} | {restaurant.Type} | {restaurant.Rating:F1}"
+                );
+            }
 
             Console.WriteLine("------------------------------");
-            Console.WriteLine("=== Summary ===");
+            Console.WriteLine($"Found: {result.Count} restaurant(s)");
 
-            Console.WriteLine($"Highest rating ({maxRating}):");
-            foreach (Restaurant r in highestRated)
-            {
-                Console.WriteLine($"  - {r.Name} ({r.Type})");
+            
             }
 
-            Console.WriteLine($"Lowest rating ({minRating}):");
-            foreach (Restaurant r in lowestRated)
-            {
-                Console.WriteLine($"  - {r.Name} ({r.Type})");
-            }
-
-
-        }
     }
 }
