@@ -50,6 +50,29 @@ namespace RestaurantApp
             Console.WriteLine("------------------------------");
             Console.WriteLine($"Total restaurants: {totalRestaurants}");
             Console.WriteLine($"Average rating: {averageRating:F2}");
+
+            double maxRating = restaurants.Max(r => r.Rating);
+            double minRating = restaurants.Min(r => r.Rating);
+
+            var highestRated = restaurants.Where(r => r.Rating == maxRating).ToList();
+            var lowestRated = restaurants.Where(r => r.Rating == minRating).ToList();
+
+            Console.WriteLine("------------------------------");
+            Console.WriteLine("=== Summary ===");
+
+            Console.WriteLine($"Highest rating ({maxRating}):");
+            foreach (Restaurant r in highestRated)
+            {
+                Console.WriteLine($"  - {r.Name} ({r.Type})");
+            }
+
+            Console.WriteLine($"Lowest rating ({minRating}):");
+            foreach (Restaurant r in lowestRated)
+            {
+                Console.WriteLine($"  - {r.Name} ({r.Type})");
+            }
+
+
         }
     }
 }
